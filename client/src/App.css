@@ -37,3 +37,20 @@ footer{
   text-decoration: none;
   color: inherit;
 }
+
+.h4geren{
+  color: white;
+  margin: 0 15px 0 15px;
+}
+
+.container-inicio{
+  width: 100vw;
+  height: calc(100vh - 76px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-inicio{
+  background: linear-gradient(10deg, rgba(137,0,195,1) 0%, rgba(17,0,209,1) 100%);
+}

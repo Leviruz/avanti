@@ -7,27 +7,39 @@ import Vitrine from './pages/Vitrine.jsx'
 import Carrinho from './pages/Carrinho.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import HomeLayout from './pages/HomeLayout';
+import Inicial from './pages/Inicial.jsx';
+import Gerenciamento from './pages/Gerenciamento.jsx';
 
 function App() {
 
   const router = createBrowserRouter([
     {
       path: "/",
+      element: <Inicial />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/gerenciamento",
+      element: <Gerenciamento />,
+    },
+
+
+    {
       element: <HomeLayout />,
       errorElement: <ErrorPage />,
       children: [
         {
-          index: true,
-          element: <Home />
+          path: "/home",
+          element: <Home />,
         },
         {
           path: "/vitrine",
-          element: <Vitrine />
+          element: <Vitrine />,
         },
         {
           path: "/carrinho",
-          element: <Carrinho />
-        },
+          element: <Carrinho />,
+        }
       ]
     }
   ])
