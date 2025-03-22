@@ -14,6 +14,13 @@ const orderSchema = z.object({
   ).min(1, "O pedido deve ter pelo menos um item"),
 });
 
+// Esquema de validação para atualização de status do pedido
+const orderStatusSchema = z.object({
+  status: z.enum(["Pendente", "Enviado", "Entregue"], {
+    message: "Status inválido. Os valores permitidos são: Pendente, Enviado ou Entregue",
+  }),
+});
+
 class OrderController {
   // Criar um novo pedido
   async create(req, res) {
@@ -117,8 +124,14 @@ class OrderController {
 
   // Atualizar status do pedido (exemplo: "Enviado", "Entregue")
   async updateStatus(req, res) {
+    const parsed = orderStatusSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Status inválido", details: parsed.error.issues });
+    }
+
     const { id } = req.params;
-    const { status } = req.body;
+    const { status } = parsed.data;
+
     try {
       const updatedOrder = await prisma.order.update({
         where: { id: Number(id) },
@@ -142,6 +155,10 @@ class OrderController {
 
       if (!order) {
         return res.status(404).json({ error: "Pedido não encontrado." });
+      }
+
+      if (order.status !== "Pendente") {
+        return res.status(400).json({ error: "O pedido só pode ser cancelado enquanto estiver 'Pendente'." });
       }
 
       // Restaurar estoque dos produtos

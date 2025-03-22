@@ -14,10 +14,10 @@ app.use(cors()); // Habilita CORS para testes no Insomnia e frontends
 app.use(express.json());
 
 // Definir todas as rotas da API
-app.use('/api/products', productRoutes);
-app.use('/api/customers', customerRoutes);
-app.use('/api/sellers', sellerRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api', productRoutes);
+app.use('/api', customerRoutes);
+app.use('/api', sellerRoutes);
+app.use('/api', orderRoutes);
 
 // Middleware para capturar erros globais
 app.use((err, req, res, next) => {

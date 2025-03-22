@@ -35,7 +35,7 @@ model Product {
   id          Int     @id @default(autoincrement())
   name        String
   description String?
-  price       Decimal
+  price       Decimal @db.Decimal(10, 2)
   stock       Int     // Quantidade disponível
   orderItems  OrderItem[]
 }
@@ -43,8 +43,8 @@ model Product {
 model Order {
   id         Int      @id @default(autoincrement())
   customerId Int
-  customer   Customer @relation(fields: [customerId], references: [id])
-  total      Decimal  
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  total      Decimal  @db.Decimal(10, 2)
   status     String   // Ex: "Pendente", "Enviado", "Entregue"
   createdAt  DateTime @default(now())
   orderItems OrderItem[] // Relacionamento com os itens do pedido
@@ -53,9 +53,9 @@ model Order {
 model OrderItem {
   id        Int     @id @default(autoincrement())
   orderId   Int
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int
-  price     Decimal // Salvar o preço do produto no momento da compra
+  price     Decimal @db.Decimal(10, 2) // Salvar o preço do produto no momento da compra
 }
