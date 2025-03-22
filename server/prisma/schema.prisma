@@ -12,3 +12,50 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Customer {
+  id         Int     @id @default(autoincrement())
+  name       String
+  email      String  @unique
+  address    String?
+  phone      String?
+  createdAt  DateTime @default(now())
+  orders     Order[] // Relacionamento com pedidos
+}
+
+model Seller {
+  id         Int     @id @default(autoincrement())
+  name       String
+  email      String  @unique
+  phone      String?
+  createdAt  DateTime @default(now())
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal
+  stock       Int     // Quantidade disponível
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+  total      Decimal  
+  status     String   // Ex: "Pendente", "Enviado", "Entregue"
+  createdAt  DateTime @default(now())
+  orderItems OrderItem[] // Relacionamento com os itens do pedido
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal // Salvar o preço do produto no momento da compra
+}
