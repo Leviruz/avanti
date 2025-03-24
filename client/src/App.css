@@ -40,7 +40,7 @@ footer{
 
 .h4geren{
   color: white;
-  margin: 0 15px 0 15px;
+  margin: 0 0 0 15px;
 }
 
 .container-inicio{
@@ -53,4 +53,19 @@ footer{
 
 .button-inicio{
   background: linear-gradient(10deg, rgba(137,0,195,1) 0%, rgba(17,0,209,1) 100%);
+}
+
+.navbar-brand {
+  margin: 0 !important;
+}
+.nav-geren{
+  margin-bottom: 30px;
+}
+
+.div-gerenciamento{
+  margin: 0 80px 40px 80px;
+  background: linear-gradient(10deg, rgb(178, 0, 255, 0.5) 0%, rgb(21, 0, 255, 0.5) 100%);
+  border-radius: 15px;
+  padding: 20px;
+  color: white;
 }

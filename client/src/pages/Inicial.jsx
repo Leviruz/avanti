@@ -10,7 +10,7 @@ const Gerenciamento = () => {
     <>
       <Navbar>
         <Container className="justify-content-center">
-          <Navbar.Brand href="#home" className="d-flex align-items-center">
+          <Navbar.Brand href="#home">
             <img src={logo} height="50" className="d-inline-block align-top" />{' '}
             <h4 className="h4geren"></h4>
           </Navbar.Brand>
