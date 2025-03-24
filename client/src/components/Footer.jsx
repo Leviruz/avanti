@@ -29,7 +29,7 @@ const Footer = () => {
                 <h6 className="text-uppercase font-weight-bold">
                   <Nav.Link
                     as={Link}
-                    to={item.nome === "Home" ? "/" : `/${item.nome.toLowerCase()}`}
+                    to={item.nome === "Inicial" ? "/" : `/${item.nome.toLowerCase()}`}
                     className="text-white"
                   >
                     {item.nome}

@@ -22,7 +22,7 @@ const Header = () => {
                 
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className='m-auto nav'>
-                        <Link to={"/"} className="nav-link">Início</Link>
+                        <Link to={"/home"} className="nav-link">Início</Link>
                         <Link to={"/vitrine"} className="nav-link">Vitrine</Link>
                         <Link to={"/carrinho"} className="nav-link">Carrinho</Link>
                     </Nav>
