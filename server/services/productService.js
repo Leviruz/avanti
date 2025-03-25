@@ -1,1 +1,7 @@
-console.log("");
+
+class ProductService{
+
+
+}
+
+module.exports = new ProductService();
