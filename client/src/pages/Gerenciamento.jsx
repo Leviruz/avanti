@@ -23,28 +23,42 @@ const Gerenciamento = () => {
     stock: '',
     images: []
   });
+  const [showClienteModal, setShowClienteModal] = useState(false);
+  const [showVendedorModal, setShowVendedorModal] = useState(false);
+  const [clienteData, setClienteData] = useState({
+    name: '',
+    email: '',
+    address: '',
+    phone: ''
+  });
+  const [vendedorData, setVendedorData] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
   const [produtos, setProdutos] = useState([]);
   const [mostrarProdutos, setMostrarProdutos] = useState(false);
 
-  async function addCliente() {
-
-    let nomeCliente = prompt("Digite o nome do cliente");
-    let emailCliente = prompt("Digite o email do cliente");
-    let enderecoCliente = prompt("Digite o endereço do cliente");
-    let telefoneCliente = prompt("Digite o telefone do cliente");
-
+  async function handleAddCliente() {
     try {
-      const response = await axios.post('http://localhost:3000/api/cliente', {
-        name: nomeCliente,
-        email: emailCliente,
-        address: enderecoCliente,
-        phone: telefoneCliente
-      });
+      const response = await axios.post('http://localhost:3000/api/cliente', clienteData);
       alert(`Cliente criado! ID: ${response.data.id}`);
+      setClienteData({ name: '', email: '', address: '', phone: '' });
+      setShowClienteModal(false);
+
+      if (mostrarClientes) {
+        const response = await axios.get('http://localhost:3000/api/cliente');
+        setClientes(response.data);
+      }
     } catch (error) {
       console.error(error);
-      setMessage('Erro ao criar cliente: ' + error.response?.data?.error || error.message);
+      alert('Erro ao criar cliente: ' + (error.response?.data?.error || error.message));
     }
+  }
+
+  function handleClienteInputChange(e) {
+    const { name, value } = e.target;
+    setClienteData({ ...clienteData, [name]: value });
   }
 
   async function toggleClientes() {
@@ -76,22 +90,26 @@ const Gerenciamento = () => {
     }
   }
 
-  async function addVendedor() {
-    let nomeVendedor = prompt("Digite o nome do vendedor");
-    let emailVendedor = prompt("Digite o email do vendedor");
-    let telefoneVendedor = prompt("Digite o telefone do vendedor");
-
+  async function handleAddVendedor() {
     try {
-      const response = await axios.post('http://localhost:3000/api/vendedor', {
-        name: nomeVendedor,
-        email: emailVendedor,
-        phone: telefoneVendedor
-      });
+      const response = await axios.post('http://localhost:3000/api/vendedor', vendedorData);
       alert(`Vendedor criado! ID: ${response.data.id}`);
+      setVendedorData({ name: '', email: '', phone: '' });
+      setShowVendedorModal(false);
+
+      if (mostrarVendedores) {
+        const response = await axios.get('http://localhost:3000/api/vendedor');
+        setVendedores(response.data);
+      }
     } catch (error) {
       console.error(error);
       alert('Erro ao criar vendedor: ' + (error.response?.data?.error || error.message));
     }
+  }
+
+  function handleVendedorInputChange(e) {
+    const { name, value } = e.target;
+    setVendedorData({ ...vendedorData, [name]: value });
   }
 
   async function toggleVendedores() {
@@ -243,7 +261,68 @@ const Gerenciamento = () => {
           </div>
         )}
 
-        <Button onClick={addCliente}>Adicionar Cliente</Button>
+        <Button onClick={() => setShowClienteModal(true)}>Adicionar Cliente</Button>
+
+        <Modal show={showClienteModal} onHide={() => setShowClienteModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Adicionar Novo Cliente</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Nome do Cliente</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={clienteData.name}
+                  onChange={handleClienteInputChange}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={clienteData.email}
+                  onChange={handleClienteInputChange}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Endereço</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="address"
+                  value={clienteData.address}
+                  onChange={handleClienteInputChange}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Telefone</Form.Label>
+                <Form.Control
+                  type="tel"
+                  name="phone"
+                  value={clienteData.phone}
+                  onChange={handleClienteInputChange}
+                  required
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowClienteModal(false)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={handleAddCliente}>
+              Salvar Cliente
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
       </div>
 
       <div className="div-gerenciamento">
@@ -282,7 +361,57 @@ const Gerenciamento = () => {
           </div>
         )}
 
-        <Button onClick={addVendedor}>Adicionar Vendedor</Button>
+        <Button onClick={() => setShowVendedorModal(true)}>Adicionar Vendedor</Button>
+
+        <Modal show={showVendedorModal} onHide={() => setShowVendedorModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Adicionar Novo Vendedor</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Nome do Vendedor</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={vendedorData.name}
+                  onChange={handleVendedorInputChange}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={vendedorData.email}
+                  onChange={handleVendedorInputChange}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Telefone</Form.Label>
+                <Form.Control
+                  type="tel"
+                  name="phone"
+                  value={vendedorData.phone}
+                  onChange={handleVendedorInputChange}
+                  required
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowVendedorModal(false)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" onClick={handleAddVendedor}>
+              Salvar Vendedor
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
 
       <div className="div-gerenciamento">

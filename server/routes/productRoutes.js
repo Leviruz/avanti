@@ -29,7 +29,6 @@ const upload = multer({
   }
 });
 
-// Rotas
 router.post('/produtos', 
   upload.array('images', 4),
   ProductController.create
