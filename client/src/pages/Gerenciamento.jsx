@@ -115,7 +115,7 @@ const Gerenciamento = () => {
         await axios.delete(`http://localhost:3000/api/vendedor/${id}`);
         alert(`Vendedor ${id} deletado com sucesso!`);
         const response = await axios.get('http://localhost:3000/api/vendedor');
-        setClientes(response.data);
+        setVendedores(response.data);
       } catch (error) {
         console.error(error);
         alert('Erro ao deletar vendedor: ' + (error.response?.data?.error || error.message));
@@ -129,7 +129,7 @@ const Gerenciamento = () => {
   }
 
   function handleImageUpload(e) {
-    const files = Array.from(e.target.files).slice(0, 4); // máximo de 4 imagens
+    const files = Array.from(e.target.files).slice(0, 4);
     setProductData({ ...productData, images: files });
   }
 
@@ -141,7 +141,6 @@ const Gerenciamento = () => {
       formData.append('price', productData.price);
       formData.append('stock', productData.stock);
 
-      // Adiciona cada imagem individualmente
       productData.images.forEach((image) => {
         formData.append('images', image);
       });
@@ -156,7 +155,6 @@ const Gerenciamento = () => {
       setProductData({ name: '', description: '', price: '', stock: '', images: [] });
       setShowProductModal(false);
 
-      // Atualiza a lista se estiver visível
       if (mostrarProdutos) {
         const response = await axios.get('http://localhost:3000/api/produtos');
         setProdutos(response.data);

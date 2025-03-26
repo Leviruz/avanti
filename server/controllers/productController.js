@@ -1,21 +1,21 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { z } = require('zod');
-const multer = require('multer'); // Adicione esta linha
-const path = require('path'); // Adicione esta linha
+const multer = require('multer'); 
+const path = require('path'); 
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads/')); // Caminho relativo
+    cb(null, path.join(__dirname, '../uploads/'));
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nome do arquivo
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 4 * 1024 * 1024 }, // Limite de 4MB por arquivo
+  limits: { fileSize: 4 * 1024 * 1024 },
   fileFilter: function (req, file, cb) {
     const filetypes = /jpeg|jpg|png/;
     const mimetype = filetypes.test(file.mimetype);
@@ -26,7 +26,7 @@ const upload = multer({
     }
     cb(new Error('Apenas imagens são permitidas (JPEG, JPG, PNG)'));
   }
-}).array('images', 4); // Aceita até 4 arquivos com o campo 'images'
+}).array('images', 4);
 
 
 // Esquema de validação
@@ -50,13 +50,10 @@ class ProductController {
     });
   }
 
-  // Criar um novo produto
    async create(req, res) {
     try {
-      // Extrair dados do formulário
       const { name, description, price, stock } = req.body;
       
-      // Validar dados
       const parsed = productSchema.safeParse({
         name,
         description,
@@ -68,14 +65,12 @@ class ProductController {
         return res.status(400).json({ error: "Dados inválidos", details: parsed.error.issues });
       }
 
-      // Processar imagens
       const imagePaths = req.files?.map(file => file.path) || [];
 
-      // Criar produto no banco de dados
       const newProduct = await prisma.product.create({
         data: {
           ...parsed.data,
-          images: imagePaths // Adicione este campo se quiser armazenar caminhos das imagens
+          images: imagePaths 
         },
       });
 
@@ -90,7 +85,18 @@ class ProductController {
   async findAll(req, res) {
     try {
       const products = await prisma.product.findMany();
-      return res.status(200).json(products);
+      
+      const productsWithRelativePaths = products.map(product => {
+        if (product.images && Array.isArray(product.images)) {
+          const adjustedImages = product.images.map(img => {
+            return img.replace(/^.*[\\\/]uploads[\\\/]/, '');
+          });
+          return { ...product, images: adjustedImages };
+        }
+        return product;
+      });
+      
+      return res.status(200).json(productsWithRelativePaths);
     } catch (error) {
       return res.status(500).json({ error: 'Erro ao buscar produtos.', details: error.message });
     }
@@ -98,17 +104,24 @@ class ProductController {
 
   // Buscar um product pelo ID
   async findOne(req, res) {
-    const { id } = req.params;
     try {
       const product = await prisma.product.findUnique({
-        where: { id: Number(id) },
+        where: { id: Number(req.params.id) },
       });
+  
       if (!product) {
-        return res.status(404).json({ error: 'produto não encontrado.' });
+        return res.status(404).json({ error: 'Produto não encontrado' });
       }
-      return res.status(200).json(product);
+  
+      // Ajusta os caminhos das imagens se necessário
+      const productWithImages = {
+        ...product,
+        images: product.images.map(img => `http://localhost:3000/uploads/${img.replace(/^.*[\\\/]uploads[\\\/]/, '')}`)
+      };
+  
+      res.json(productWithImages);
     } catch (error) {
-      return res.status(500).json({ error: 'Erro ao buscar produto.', details: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 
