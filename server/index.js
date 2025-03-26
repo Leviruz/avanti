@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const cors = require('cors'); // Permite requisições de outras origens (CORS)
 const productRoutes = require('./routes/productRoutes');
@@ -12,6 +13,7 @@ const app = express();
 
 app.use(cors()); // Habilita CORS para testes no Insomnia e frontends
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Definir todas as rotas da API
 app.use('/api', productRoutes);

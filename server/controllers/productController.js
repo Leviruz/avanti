@@ -1,6 +1,33 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { z } = require('zod');
+const multer = require('multer'); // Adicione esta linha
+const path = require('path'); // Adicione esta linha
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../uploads/')); // Caminho relativo
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nome do arquivo
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 4 * 1024 * 1024 }, // Limite de 4MB por arquivo
+  fileFilter: function (req, file, cb) {
+    const filetypes = /jpeg|jpg|png/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Apenas imagens são permitidas (JPEG, JPG, PNG)'));
+  }
+}).array('images', 4); // Aceita até 4 arquivos com o campo 'images'
+
 
 // Esquema de validação
 const productSchema = z.object({
@@ -11,18 +38,50 @@ const productSchema = z.object({
 });
 
 class ProductController {
+
+  static uploadMiddleware(req, res, next) {
+    upload(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: err.message });
+      } else if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      next();
+    });
+  }
+
   // Criar um novo produto
-  async create(req, res) {
-    const parsed = productSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ error: "Dados inválidos", details: parsed.error.issues });
-    }
+   async create(req, res) {
     try {
-      const newProduct = await prisma.product.create({
-        data: parsed.data,
+      // Extrair dados do formulário
+      const { name, description, price, stock } = req.body;
+      
+      // Validar dados
+      const parsed = productSchema.safeParse({
+        name,
+        description,
+        price: parseFloat(price),
+        stock: stock ? parseInt(stock) : 0
       });
+      
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Dados inválidos", details: parsed.error.issues });
+      }
+
+      // Processar imagens
+      const imagePaths = req.files?.map(file => file.path) || [];
+
+      // Criar produto no banco de dados
+      const newProduct = await prisma.product.create({
+        data: {
+          ...parsed.data,
+          images: imagePaths // Adicione este campo se quiser armazenar caminhos das imagens
+        },
+      });
+
       return res.status(201).json(newProduct);
     } catch (error) {
+      console.error('Erro ao criar produto:', error);
       return res.status(500).json({ error: 'Erro ao criar produto.', details: error.message });
     }
   }

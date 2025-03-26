@@ -37,6 +37,7 @@ model Product {
   description String?
   price       Decimal @db.Decimal(10, 2)
   stock       Int     // Quantidade disponível
+  images      String[] // Caminhos das imagens
   orderItems  OrderItem[]
 }
 
