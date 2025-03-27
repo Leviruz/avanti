@@ -1,21 +1,22 @@
-import React from 'react';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React from "react";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { TbShoppingCartPlus } from "react-icons/tb";
-import { useCart } from '../context/cartContext';
-
+import { useCart } from "../context/cartContext";
+import { ToastContainer, toast } from "react-toastify";
 const CardProduct = ({ product }) => {
-
+  // const notify = () => toast("Wow so easy!");
   const { addToCart } = useCart();
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addToCart({
       ...product,
-      quantity: 1
+      quantity: 1,
     });
+    toast.success("Pedido adicionado ao carrinho.");
   };
 
   const navigate = useNavigate();
@@ -23,10 +24,10 @@ const CardProduct = ({ product }) => {
   const getFirstImage = () => {
     if (product.images && product.images.length > 0) {
       const imagePath = product.images[0];
-      const relativePath = imagePath.replace(/^.*[\\\/]uploads[\\\/]/, '');
+      const relativePath = imagePath.replace(/^.*[\\\/]uploads[\\\/]/, "");
       return `http://localhost:3000/uploads/${relativePath}`;
     }
-    return 'https://via.placeholder.com/300x200?text=Sem+Imagem';
+    return "https://via.placeholder.com/300x200?text=Sem+Imagem";
   };
 
   const handleDetailsClick = () => {
@@ -48,7 +49,7 @@ const CardProduct = ({ product }) => {
         <Card.Text className="flex-grow-1">
           {product.description && product.description.length > 100
             ? `${product.description.substring(0, 100)}...`
-            : product.description || 'Sem descrição'}
+            : product.description || "Sem descrição"}
         </Card.Text>
         <div className="mt-auto">
           <Card.Text className="fw-bold text-primary">
@@ -82,13 +83,10 @@ CardProduct.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     description: PropTypes.string,
-    price: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]).isRequired,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     stock: PropTypes.number,
-    images: PropTypes.arrayOf(PropTypes.string)
-  }).isRequired
+    images: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
 };
 
 export default CardProduct;

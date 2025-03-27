@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Container, Alert, Form, Modal } from 'react-bootstrap';
-import { useCart } from '../context/cartContext';
-import axios from 'axios';
-import carrinhoVazio from '../assets/img/carrinhovazio.png'
+import React, { useState, useEffect } from "react";
+import { Table, Button, Container, Alert, Form, Modal } from "react-bootstrap";
+import { useCart } from "../context/cartContext";
+import axios from "axios";
+import carrinhoVazio from "../assets/img/carrinhovazio.png";
+import { toast } from "react-toastify";
 
 const Carrinho = () => {
   const {
@@ -11,24 +12,24 @@ const Carrinho = () => {
     clearCart: limparCarrinho,
     cartTotal: total,
     selectedSeller,
-    setSelectedSeller
+    setSelectedSeller,
   } = useCart();
 
-  const [mensagem, setMensagem] = useState('');
+  const [mensagem, setMensagem] = useState("");
   const [sellers, setSellers] = useState([]);
   const [loadingSellers, setLoadingSellers] = useState(true);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const [customerData, setCustomerData] = useState({
-    name: '',
-    email: '',
-    address: '',
-    phone: ''
+    name: "",
+    email: "",
+    address: "",
+    phone: "",
   });
 
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/vendedor');
+        const response = await axios.get("http://localhost:3000/api/vendedor");
         setSellers(response.data);
       } catch (error) {
         console.error("Erro ao buscar vendedores:", error);
@@ -42,7 +43,7 @@ const Carrinho = () => {
 
   const handleFinalizarCompraClick = () => {
     if (!selectedSeller) {
-      setMensagem('Selecione um vendedor antes de finalizar!');
+      setMensagem("Selecione um vendedor antes de finalizar!");
       return;
     }
     setShowCustomerModal(true);
@@ -59,32 +60,42 @@ const Carrinho = () => {
       const orderData = {
         sellerId: selectedSeller.id,
         customer: customerData,
-        items: carrinho.map(item => ({
+        items: carrinho.map((item) => ({
           productId: item.id,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
         })),
-        total: total
+        total: total,
       };
 
       // Enviar para a API
-      const response = await axios.post('http://localhost:3000/api/pedidos', orderData);
+      const response = await axios.post(
+        "http://localhost:3000/api/pedidos",
+        orderData
+      );
 
       // Limpar carrinho e fechar modal
       limparCarrinho();
       setShowCustomerModal(false);
-      setMensagem('Compra finalizada com sucesso!');
-      setTimeout(() => setMensagem(''), 3000);
+      setMensagem("Compra finalizada com sucesso!");
+      setTimeout(() => setMensagem(""), 3000);
     } catch (error) {
-      console.error('Erro ao finalizar compra:', error);
-      setMensagem('Erro ao finalizar compra: ' + (error.response?.data?.error || error.message));
+      console.error("Erro ao finalizar compra:", error);
+      setMensagem(
+        "Erro ao finalizar compra: " +
+          (error.response?.data?.error || error.message)
+      );
     }
   };
 
   return (
     <Container className="mt-5">
       <h2>Carrinho de Compras</h2>
-      {mensagem && <Alert variant={mensagem.includes('Erro') ? "danger" : "success"}>{mensagem}</Alert>}
+      {mensagem && (
+        <Alert variant={mensagem.includes("Erro") ? "danger" : "success"}>
+          {mensagem}
+        </Alert>
+      )}
 
       {carrinho.length === 0 ? (
         <div>
@@ -115,7 +126,15 @@ const Carrinho = () => {
                   <td>{item.quantity}</td>
                   <td>R$ {(Number(item.price) * item.quantity).toFixed(2)}</td>
                   <td>
-                    <Button variant="danger" onClick={() => removerItem(item.id)}>Remover</Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => {
+                        removerItem(item.id);
+                        toast.error("Item removido do carrinho de compras.");
+                      }}
+                    >
+                      Remover
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -129,10 +148,12 @@ const Carrinho = () => {
             ) : (
               <Form.Group>
                 <Form.Select
-                  value={selectedSeller?.id || ''}
+                  value={selectedSeller?.id || ""}
                   onChange={(e) => {
                     const sellerId = e.target.value;
-                    const seller = sellers.find(s => s.id === Number(sellerId));
+                    const seller = sellers.find(
+                      (s) => s.id === Number(sellerId)
+                    );
                     setSelectedSeller(seller);
                   }}
                   required
@@ -159,7 +180,10 @@ const Carrinho = () => {
           </Button>
 
           {/* Modal para informações do cliente */}
-          <Modal show={showCustomerModal} onHide={() => setShowCustomerModal(false)}>
+          <Modal
+            show={showCustomerModal}
+            onHide={() => setShowCustomerModal(false)}
+          >
             <Modal.Header closeButton>
               <Modal.Title>Informações do Cliente</Modal.Title>
             </Modal.Header>
@@ -211,7 +235,10 @@ const Carrinho = () => {
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={() => setShowCustomerModal(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCustomerModal(false)}
+              >
                 Cancelar
               </Button>
               <Button variant="primary" onClick={handleFinalizarCompra}>
