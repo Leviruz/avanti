@@ -1,148 +1,106 @@
-# 🛍️ Avanti - E-Commerce
+# 🛍️ Orionbyte - E-Commerce Gamer & TI
 
-Bem-vindo ao repositório do **Avanti**, um projeto de e-commerce desenvolvido pela **Equipe 3 FSN5**. O Avanti é uma plataforma de vendas online onde clientes podem visualizar produtos, adicioná-los ao carrinho e finalizar suas compras, enquanto vendedores podem cadastrar e gerenciar seus produtos.
+Bem-vindo ao repositório da **Orionbyte**, um e-commerce focado em produtos gamer e de tecnologia, desenvolvido pela **Equipe 3 FSN5** como parte do desafio de criar uma plataforma completa para vendas online.
 
 ## 🚀 Sobre o Projeto
 
-Este projeto foi desenvolvido como parte de uma atividade acadêmica, com o objetivo de criar um e-commerce funcional. O site permite o cadastro de clientes e vendedores, criação e gerenciamento de produtos e um sistema de carrinho de compras que finaliza e registra as vendas no banco de dados.
+A Orionbyte é uma plataforma de e-commerce que permite a criação, gerenciamento e venda de produtos. O sistema conta com um frontend dinâmico e um backend robusto, garantindo uma experiência de compra fluida e eficiente.
 
-## 👥 Equipe de Desenvolvimento
+### 📌 Funcionalidades Principais
+- 📦 **Gerenciamento de Produtos** - Criar, listar, editar e deletar produtos.
+- 👤 **Cadastro de Clientes e Vendedores** - Permite o gerenciamento dos usuários da plataforma.
+- 🛍️ **Carrinho de Compras** - Adicionar e remover produtos do carrinho e finalizar compras.
+- 📊 **Registro de Pedidos** - As vendas são armazenadas e gerenciadas no banco de dados.
 
+## 🧑‍💻 Equipe Desenvolvedora
 - **Vinícius Vasconcelos**
 - **Levir Melo**
 - **Kauã Lima**
 - **Nayra Moura**
 - **Ruthielen Almeida**
 
-## 🎨 Identidade Visual
-
-A identidade visual do Avanti foi cuidadosamente criada para garantir uma experiência agradável e intuitiva para os usuários, com um design moderno e responsivo.
-
-## 📌 Funcionalidades
-
-✅ Cadastro e gerenciamento de **Clientes** 🧑‍💻\
-✅ Cadastro e gerenciamento de **Vendedores** 🏪\
-✅ Cadastro e gerenciamento de **Produtos** 📦\
-✅ Sistema de **Carrinho de Compras** 🛒\
-✅ Finalização de compras e registro no **Banco de Dados** 📜\
-✅ Interface amigável e responsiva 📱💻
-
-## 🛠️ Tecnologias Utilizadas
-
-- **Front-end**: React.js, Vite, CSS
-- **Back-end**: Node.js, Express
-- **Banco de Dados**: PostgreSQL com Prisma ORM
-
 ## 📂 Estrutura do Projeto
 
 ```
 leviruz-avanti/
-├── client/
-│   ├── README.md
-│   ├── eslint.config.js
-│   ├── index.html
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── .gitignore
-│   ├── public/
-│   └── src/
-│       ├── App.css
-│       ├── App.jsx
-│       ├── index.css
-│       ├── main.jsx
-│       ├── assets/
-│       │   └── img/
-│       ├── components/
-│       │   ├── CardProduct.jsx
-│       │   ├── Carrossel.jsx
-│       │   ├── DetalhesProduto.jsx
-│       │   ├── Footer.jsx
-│       │   └── Header.jsx
-│       ├── context/
-│       │   └── CartContext.jsx
-│       └── pages/
-│           ├── Carrinho.jsx
-│           ├── ErrorPage.jsx
-│           ├── Gerenciamento.jsx
-│           ├── Home.jsx
-│           ├── HomeLayout.jsx
-│           ├── Inicial.jsx
-│           └── Vitrine.jsx
-└── server/
-    ├── index.js
-    ├── package-lock.json
-    ├── package.json
-    ├── .gitignore
-    ├── config/
-    │   └── connectionDB.js
-    ├── controllers/
-    │   ├── customerController.js
-    │   ├── orderController.js
-    │   ├── productController.js
-    │   └── sellerController.js
-    ├── middleware/
-    │   └── authMiddleware.js
-    ├── prisma/
-    │   ├── schema.prisma
-    │   └── migrations/
-    ├── repositories/
-    │   ├── customerRepository.js
-    │   ├── orderRepository.js
-    │   ├── productRepository.js
-    │   └── sellerRepository.js
-    ├── routes/
-    │   ├── customerRoutes.js
-    │   ├── orderRoutes.js
-    │   ├── productRoutes.js
-    │   └── sellerRoutes.js
-    ├── services/
-    │   ├── customerService.js
-    │   ├── orderService.js
-    │   ├── productService.js
-    │   └── sellerService.js
-    └── uploads/
+├── client/          # Frontend do projeto
+│   ├── src/        # Código-fonte
+│   │   ├── components/        # Componentes reutilizáveis
+│   │   ├── context/           # Context API para gerenciamento de estado
+│   │   ├── pages/             # Páginas da aplicação
+│   │   ├── assets/            # Imagens e recursos visuais
+│   ├── public/                # Arquivos estáticos
+│   ├── index.html             # Página principal
+│   ├── vite.config.js         # Configuração do Vite
+│   ├── package.json           # Dependências do frontend
+└── server/          # Backend do projeto
+    ├── controllers/           # Lógica de controle das rotas
+    ├── middleware/            # Middlewares para autenticação e segurança
+    ├── prisma/                # Configuração do banco de dados Prisma
+    ├── repositories/          # Repositórios para interação com o banco
+    ├── routes/                # Definição das rotas da API
+    ├── services/              # Regras de negócio da aplicação
+    ├── uploads/               # Diretório para armazenamento de arquivos
+    ├── index.js               # Ponto de entrada do backend
+    ├── package.json           # Dependências do backend
 ```
 
-## 🔧 Como Rodar o Projeto
+## 🏗️ Tecnologias Utilizadas
 
-### Pré-requisitos
+### 🌐 Frontend:
+- React.js ⚛️
+- Vite 🚀
+- Context API 📌
+- CSS Modules 🎨
 
-- Node.js instalado
-- PostgreSQL instalado e configurado
+### 🖥️ Backend:
+- Node.js 🟢
+- Express.js 🚀
+- Prisma ORM 🛢️
+- PostgreSQL 🗄️
+- JWT (JSON Web Token) 🔑
 
-### Passos
+## 🔧 Como Executar o Projeto
 
-1. Clone este repositório:
-   ```sh
+### ⚡ Pré-requisitos
+Antes de começar, você precisará ter instalado em sua máquina:
+- **Node.js** (versão mais recente recomendada)
+- **PostgreSQL** (para o banco de dados)
+- **Git**
+
+### 🛠️ Passo a Passo
+
+1. **Clone este repositório**
+   ```bash
    git clone https://github.com/Leviruz/avanti.git
+   cd avanti
    ```
-2. Acesse o diretório do projeto:
-   ```sh
-   cd leviruz-avanti
+
+2. **Configurar o Backend**
+   ```bash
+   cd server
+   npm install
    ```
-3. Instale as dependências do cliente e do servidor:
-   ```sh
-   cd client && npm install
-   cd ../server && npm install
-   ```
-4. Configure o banco de dados no arquivo `.env`
-5. Execute as migrações do Prisma:
-   ```sh
-   npx prisma migrate dev
-   ```
-6. Inicie o servidor:
-   ```sh
-   npm start
-   ```
-7. Em outra aba do terminal, inicie o cliente:
-   ```sh
+   - Configure o banco de dados no arquivo `.env`.
+   - Execute as migrações do Prisma:
+     ```bash
+     npx prisma migrate dev
+     ```
+   - Inicie o servidor:
+     ```bash
+     npm run dev
+     ```
+
+3. **Configurar o Frontend**
+   ```bash
    cd ../client
+   npm install
    npm run dev
    ```
-8. Acesse o site no navegador em `http://localhost:5173`
+
+O frontend estará disponível em `http://localhost:5173` e o backend em `http://localhost:3000`.
 
 ---
 
-🔗 **Equipe 3 FSN5 🚀** 
+🔗 **Equipe 3 FSN5** - Desenvolvendo tecnologia para o futuro! 🚀
 
