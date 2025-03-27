@@ -88,7 +88,7 @@ Antes de começar, você precisará ter instalado em sua máquina:
      ```
    - Inicie o servidor:
      ```bash
-     npm run dev
+     node index.js
      ```
 
 3. **Configurar o Frontend**
