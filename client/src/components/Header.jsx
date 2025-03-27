@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -8,7 +8,16 @@ import logo from '../assets/img/orionbytelogo.png'
 import { FaSearch } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ onSearch }) => {
+    const [query, setQuery] = useState(''); // Estado para o texto digitado
+
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Prevenir recarregamento da página
+        if (onSearch) {
+            onSearch(query); // Passa o termo de pesquisa para o componente pai
+        }
+    };
+
     return (
         <Navbar expand="lg" className="navbar">
             <Container>
@@ -27,8 +36,8 @@ const Header = () => {
                         <Link to={"/carrinho"} className="nav-link">Carrinho</Link>
                     </Nav>
                     
-                    <Form className="d-flex">
-                        <Form.Control type="text" placeholder="Pesquisar" className="me-2" />
+                    <Form className="d-flex" onSubmit={handleSubmit}>
+                        <Form.Control type="text" placeholder="Pesquisar" className="me-2" value={query} onChange={(e) => setQuery(e.target.value)}/>
                         <Button type="submit" className='botao-submit'><FaSearch /></Button>
                     </Form>
                 </Navbar.Collapse>
