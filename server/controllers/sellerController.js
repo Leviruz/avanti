@@ -39,7 +39,7 @@ class SellerController {
     }
   }
 
-  // // Procurar um vendedor pelo ID
+  // Buscar um vendedor pelo ID
   async findOne(req, res) {
     try {
       const { id } = req.params;
@@ -54,7 +54,7 @@ class SellerController {
     }
   }
 
-  // Atualiza os dados do vendedor no banco de dados
+  // Atualizar um vendedor
   async update(req, res) {
     try {
       const { id } = req.params;
