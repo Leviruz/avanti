@@ -2,6 +2,7 @@ import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+// Importe seus componentes exatamente como estava
 import Home from './pages/Home.jsx'
 import Vitrine from './pages/Vitrine.jsx'
 import Carrinho from './pages/Carrinho.jsx'

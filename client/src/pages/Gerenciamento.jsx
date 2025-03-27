@@ -38,8 +38,6 @@ const Gerenciamento = () => {
   });
   const [produtos, setProdutos] = useState([]);
   const [mostrarProdutos, setMostrarProdutos] = useState(false);
-  const [vendas, setVendas] = useState([]);
-  const [mostrarVendas, setMostrarVendas] = useState(false);
 
   async function handleAddCliente() {
     try {
@@ -210,35 +208,6 @@ const Gerenciamento = () => {
       } catch (error) {
         console.error(error);
         alert('Erro ao deletar produto: ' + (error.response?.data?.error || error.message));
-      }
-    }
-  }
-
-  async function toggleVendas() {
-    if (!mostrarVendas) {
-      try {
-        const response = await axios.get('http://localhost:3000/api/pedidos');
-        setVendas(response.data);
-        setMostrarVendas(true);
-      } catch (error) {
-        console.error(error);
-        alert('Erro ao buscar vendas: ' + (error.response?.data?.error || error.message));
-      }
-    } else {
-      setMostrarVendas(false);
-    }
-  }
-  
-  async function deletarVenda(id) {
-    if (window.confirm(`Tem certeza que deseja deletar a venda de ID ${id}?`)) {
-      try {
-        await axios.delete(`http://localhost:3000/api/pedidos/${id}`);
-        alert(`Venda ${id} deletada com sucesso!`);
-        const response = await axios.get('http://localhost:3000/api/pedidos');
-        setVendas(response.data);
-      } catch (error) {
-        console.error(error);
-        alert('Erro ao deletar venda: ' + (error.response?.data?.error || error.message));
       }
     }
   }
@@ -574,55 +543,9 @@ const Gerenciamento = () => {
       </Modal>
 
       <div className="div-gerenciamento">
-  <h2>Vendas</h2><br />
-  <Button onClick={toggleVendas}>
-    {mostrarVendas ? 'Ocultar Vendas' : 'Ver Vendas'}
-  </Button><br /><br />
-
-  {mostrarVendas && (
-    <div className="div-tabela-vendas">
-      <h3>Lista de Vendas:</h3>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Vendedor</th>
-            <th>Total</th>
-            <th>Data</th>
-            <th>Itens</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {vendas.map((venda) => (
-            <tr key={venda.id}>
-              <td>{venda.id}</td>
-              <td>{venda.customer?.name || 'Cliente não encontrado'}</td>
-              <td>{venda.seller?.name || 'Vendedor não encontrado'}</td>
-              <td>R$ {Number(venda.total).toFixed(2)}</td>
-              <td>{new Date(venda.createdAt).toLocaleDateString()}</td>
-              <td>
-                <ul>
-                  {venda.orderItems?.map((item, index) => (
-                    <li key={index}>
-                      {item.quantity}x {item.product?.name || 'Produto não encontrado'} (R$ {Number(item.price).toFixed(2)})
-                    </li>
-                  ))}
-                </ul>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => deletarVenda(venda.id)}>
-                  Deletar
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  )}
-</div>
+        <h2>Vendas</h2><br />
+        <Button>Ver Vendas</Button>
+      </div>
     </>
   )
 }
