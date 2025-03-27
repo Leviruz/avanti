@@ -39,7 +39,7 @@ class SellerController {
     }
   }
 
-  // Procurar um vendedor pe ID
+  // // Procurar um vendedor pelo ID
   async findOne(req, res) {
     try {
       const { id } = req.params;
