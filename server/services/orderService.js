@@ -1,5 +1,7 @@
 const orderRepository = require("../repositories/orderRepository");
 const { z } = require("zod");
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 // Esquemas de validação
 const orderSchema = z.object({
@@ -26,79 +28,103 @@ const orderStatusSchema = z.object({
 
 class OrderService {
   async create(orderData) {
-    const parsed = orderSchema.safeParse(orderData);
-    if (!parsed.success) {
-      throw new Error(
-        JSON.stringify({
-          statusCode: 400,
-          error: "Dados inválidos",
-          details: parsed.error.issues,
-        })
-      );
-    }
+    const { sellerId, customer, items, total } = orderData;
 
-    const { customerId, items } = parsed.data;
-
-    // Verificar se o cliente existe
-    const customer = await orderRepository.findCustomer(customerId);
-    if (!customer) {
-      throw new Error(
-        JSON.stringify({
-          statusCode: 404,
-          error: "Cliente não encontrado",
-        })
-      );
-    }
-
-    let total = 0;
-    const orderItems = [];
-
-    // Processar cada item do pedido
-    for (const item of items) {
-      const product = await orderRepository.findProduct(item.productId);
-
-      if (!product) {
-        throw new Error(
-          JSON.stringify({
-            statusCode: 404,
-            error: `Produto com ID ${item.productId} não encontrado`,
-          })
-        );
-      }
-
-      if (product.stock < item.quantity) {
-        throw new Error(
-          JSON.stringify({
-            statusCode: 400,
-            error: `Estoque insuficiente para o produto ${product.name}`,
-          })
-        );
-      }
-
-      total += product.price * item.quantity;
-      orderItems.push({
-        productId: item.productId,
-        quantity: item.quantity,
-        price: product.price,
+    try {
+      // Verificar se o vendedor existe
+      const seller = await prisma.seller.findUnique({
+        where: { id: sellerId }
       });
 
-      // Atualizar estoque
-      await orderRepository.updateProductStock(item.productId, item.quantity);
-    }
+      if (!seller) {
+        throw new Error(JSON.stringify({
+          statusCode: 404,
+          error: "Vendedor não encontrado"
+        }));
+      }
 
-    // Criar o pedido
-    return await orderRepository.create({
-      customerId,
-      total,
-      status: "Pendente",
-      orderItems: {
-        create: orderItems,
-      },
-    });
+      // Criar ou encontrar o cliente
+      let customerRecord = await prisma.customer.findUnique({
+        where: { email: customer.email }
+      });
+
+      if (!customerRecord) {
+        customerRecord = await prisma.customer.create({
+          data: {
+            name: customer.name,
+            email: customer.email,
+            address: customer.address,
+            phone: customer.phone
+          }
+        });
+      }
+
+      // Criar o pedido
+      const order = await prisma.order.create({
+        data: {
+          customerId: customerRecord.id,
+          sellerId: sellerId,
+          total: parseFloat(total),
+          status: "Pendente", // Adicione esta linha
+          orderItems: {
+            create: items.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: parseFloat(item.price)
+            }))
+          }
+        },
+        include: {
+          orderItems: true
+        }
+      });
+
+      // Atualizar o estoque dos produtos
+      for (const item of items) {
+        await prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: {
+              decrement: item.quantity
+            }
+          }
+        });
+      }
+
+      return order;
+    } catch (error) {
+      console.error('Erro ao criar pedido:', error);
+      throw new Error(JSON.stringify({
+        statusCode: 500,
+        error: "Erro ao criar pedido",
+        details: error.message
+      }));
+    }
   }
 
   async findAll() {
-    return await orderRepository.findAll();
+    try {
+      return await prisma.order.findMany({
+        include: {
+          orderItems: {
+            include: {
+              product: true
+            }
+          },
+          customer: true,
+          seller: true
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+    } catch (error) {
+      throw new Error(JSON.stringify({
+        statusCode: 500,
+        error: "Erro ao buscar pedidos",
+        details: error.message
+      }));
+    }
   }
 
   async findOne(id) {

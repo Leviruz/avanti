@@ -29,6 +29,7 @@ model Seller {
   email      String  @unique
   phone      String?
   createdAt  DateTime @default(now())
+  orders     Order[]
 }
 
 model Product {
@@ -44,11 +45,13 @@ model Product {
 model Order {
   id         Int      @id @default(autoincrement())
   customerId Int
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer   Customer @relation(fields: [customerId], references: [id])
+  sellerId   Int
+  seller     Seller   @relation(fields: [sellerId], references: [id])
   total      Decimal  @db.Decimal(10, 2)
-  status     String   // Ex: "Pendente", "Enviado", "Entregue"
+  status     String   @default("Pendente")
   createdAt  DateTime @default(now())
-  orderItems OrderItem[] // Relacionamento com os itens do pedido
+  orderItems OrderItem[]
 }
 
 model OrderItem {
