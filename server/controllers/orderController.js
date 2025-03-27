@@ -3,6 +3,13 @@ const OrderService = require("../services/orderService");
 class OrderController {
   async create(req, res) {
     try {
+      if (!req.body.sellerId || !req.body.customer || !req.body.items || !req.body.total) {
+        return res.status(400).json({
+          error: "Dados incompletos",
+          details: "sellerId, customer, items e total são obrigatórios"
+        });
+      }
+  
       const newOrder = await OrderService.create(req.body);
       return res.status(201).json(newOrder);
     } catch (error) {
